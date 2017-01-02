@@ -1,0 +1,342 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0",
+        "title": "Course and Study plan REST APIs"
+    },
+    "host": "localhost:8080",
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/courses": {
+            "post": {
+                "summary": "Add new course.",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "course",
+                        "description": "Course object data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Course"
+                        }
+                    },
+                    {
+                        "$ref": "#/parameters/token"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully created",
+                        "schema": {
+                            "$ref": "#/definitions/Course"
+                        }
+                    },
+                    "409": {
+                        "description": "Course already exists"
+                    }
+                }
+            },
+            "get": {
+                "description": "Gets list of `Course` object. \nCan filter courses by parts of the code, title, semster.\n",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "Full course code or part of the course code",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Full course title or part of course title",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "semester",
+                        "in": "query",
+                        "description": "Semester when course is going",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/parameters/token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Course"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/courses/{code}": {
+            "get": {
+                "description": "Gets `Course` object.\n",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "Unique code of course",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/parameters/token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/Course"
+                        }
+                    }
+                }
+            }
+        },
+        "/study-plans": {
+            "post": {
+                "summary": "Add new study plan.",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "student",
+                        "description": "Name of the student",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "student": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/parameters/token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/StudyPlan"
+                        }
+                    }
+                }
+            },
+            "get": {
+                "summary": "Get list of study plans.",
+                "description": "des",
+                "parameters": [
+                    {
+                        "name": "student",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/parameters/token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/StudyPlan"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/study-plans/{id}": {
+            "get": {
+                "description": "Gets `StudyPlan` object.\n",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Unique id of study plan",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "$ref": "#/parameters/token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/StudyPlan"
+                        }
+                    }
+                }
+            }
+        },
+        "/study-plans/{id}/courses": {
+            "post": {
+                "summary": "Add new study plan.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Unique id of study plan",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "in": "body",
+                        "name": "courseCode",
+                        "description": "Code of the course",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "courseCode": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/parameters/token"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/StudyPlan"
+                        }
+                    },
+                    "409": {
+                        "description": "Course is already added to study plan"
+                    },
+                    "417": {
+                        "description": "Course or study plan does not exist.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "description": "Get all courses assosiated with study plan",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Unique id of study plan",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "$ref": "#/parameters/token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Course"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "StudyPlan": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "student": {
+                    "type": "string"
+                },
+                "submissionDate": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "course": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Course"
+                    }
+                },
+                "totalPrice": {
+                    "type": "number",
+                    "format": "double"
+                }
+            }
+        },
+        "Course": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "assessmentForm": {
+                    "type": "string"
+                },
+                "lecturer": {
+                    "type": "string"
+                },
+                "semester": {
+                    "$ref": "#/definitions/Semester"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "double"
+                }
+            }
+        },
+        "Semester": {
+            "type": "string",
+            "enum": [
+                "SPRING",
+                "AUTUMN",
+                "ANY"
+            ]
+        }
+    },
+    "parameters": {
+        "token": {
+            "name": "token",
+            "description": "Inique identifier of an application requesting access to service",
+            "in": "query",
+            "required": true,
+            "type": "string"
+        }
+    }
+}
